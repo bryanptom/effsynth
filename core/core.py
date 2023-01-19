@@ -313,9 +313,7 @@ class TextlineGenerator:
         
         #generate num_paragraphs random numbers summing to num_lines
         line_counts = np.random.multinomial(num_lines, np.ones(num_paragraphs)/num_paragraphs, size=1)[0]
-        print(num_lines)
-        print(num_paragraphs)
-        print(line_counts)
+
         if self.single_words:
             textline_texts = [self.generate_synthetic_word_text() for _ in range(num_lines)]
         elif self.wiki_text:
@@ -334,13 +332,16 @@ class TextlineGenerator:
 
         max_width = max([o["image"].width for o in out_dicts])
         out_images = []
-        for o in out_dicts:
+        p_num = 0
+        for i, o in enumerate(out_dicts):
             diff = max_width - o["image"].width
-            l_r_props = np.random.uniform(0, 1, 2)  
-            l_pad = int(diff * l_r_props[0])
-            r_pad = diff - l_pad 
+            if i == sum(line_counts[:p_num]):
+                l_pad = diff
+                p_num += 1
+            l_pad = 0
+            
             if bool(random.getrandbits(1)): #Randomly determine whether to pad on left or right (TODO make this more likely to pad on right to reflect real world)
-                out_image = ImageOps.expand(o["image"], border=(0, 0, r_pad, 0), fill=(255, 255, 255))
+                out_image = ImageOps.expand(o["image"], border=(0, 0, diff - l_pad, 0), fill=(255, 255, 255))
             else:
                 out_image = ImageOps.expand(o["image"], border=(l_pad, 0, 0, 0), fill=(255, 255, 255))
             out_images.append(out_image)
