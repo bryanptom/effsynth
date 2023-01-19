@@ -340,10 +340,8 @@ class TextlineGenerator:
                 p_num += 1
             l_pad = 0
             
-            if bool(random.getrandbits(1)): #Randomly determine whether to pad on left or right (TODO make this more likely to pad on right to reflect real world)
-                out_image = ImageOps.expand(o["image"], border=(0, 0, diff - l_pad, 0), fill=(255, 255, 255))
-            else:
-                out_image = ImageOps.expand(o["image"], border=(l_pad, 0, 0, 0), fill=(255, 255, 255))
+            out_image = ImageOps.expand(o["image"], border=(0, 0, diff - l_pad, 0), fill=(255, 255, 255))
+            out_image = ImageOps.expand(o["image"], border=(l_pad, 0, 0, 0), fill=(255, 255, 255))
             out_images.append(out_image)
 
         out_dict = out_dicts[0]
